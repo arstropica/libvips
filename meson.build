@@ -12,17 +12,6 @@ project('vips', 'c', 'cpp',
         'b_ndebug=if-release'
     ]
 )
-# intl patch
-# Force gettext stub if not auto-detected
-libintl_dep = cc.find_library('intl', required: false)
-
-if not libintl_dep.found()
-  libintl_dep = declare_dependency(
-    include_directories: include_directories('/opt/gettext/include'),
-    link_args: ['-L/opt/gettext/lib', '-lintl']
-  )
-endif
-# end intl patch
 
 version_parts = meson.project_version().split('.')
 version_major = version_parts[0]
@@ -61,6 +50,18 @@ endif
 host_os = host_machine.system()
 cc = meson.get_compiler('c')
 cpp = meson.get_compiler('cpp')
+
+# intl patch
+# Force gettext stub if not auto-detected
+libintl_dep = cc.find_library('intl', required: false)
+
+if not libintl_dep.found()
+  libintl_dep = declare_dependency(
+    include_directories: include_directories('/opt/gettext/include'),
+    link_args: ['-L/opt/gettext/lib', '-lintl']
+  )
+endif
+# end intl patch
 
 # Prevent use of void* pointer arithmetic to support MSVC
 add_project_arguments(cc.get_supported_arguments('-Werror=pointer-arith'), language : ['cpp', 'c'])
