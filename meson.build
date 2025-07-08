@@ -707,7 +707,7 @@ gettext_domain = 'vips@0@.@1@'.format(version_major, version_minor)
 cfg_var.set_quoted('GETTEXT_PACKAGE', gettext_domain)
 cfg_var.set_quoted('VIPS_PREFIX', prefix_dir)
 cfg_var.set_quoted('VIPS_LIBDIR', lib_dir)
-is_wasm = host_machine.system() == 'emscripten'
+is_wasm = true
 if cc.has_function('ngettext') and not is_wasm
     cfg_var.set('ENABLE_NLS', 1)
     have_bind_textdomain_codeset = cc.has_function('bind_textdomain_codeset')
