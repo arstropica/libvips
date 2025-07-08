@@ -724,7 +724,7 @@ if not is_wasm
         # endif
     endif
     cfg_var.set('HAVE_BIND_TEXTDOMAIN_CODESET', have_bind_textdomain_codeset)
-emdif
+endif
 
 if host_os == 'darwin'
     profile_dir = '/Library/ColorSync/Profiles'
