@@ -396,6 +396,11 @@ if libwebp_dep.found()
     external_deps += libwebp_dep
     external_deps += dependency('libwebpmux', version: '>=0.6')
     external_deps += dependency('libwebpdemux', version: '>=0.6')
+    # Add libsharpyuv for WebP 1.3+
+    libsharpyuv_dep = dependency('libsharpyuv', required: false)
+    if libsharpyuv_dep.found()
+        external_deps += libsharpyuv_dep
+    endif
     cfg_var.set('HAVE_LIBWEBP', '1')
 endif
 
