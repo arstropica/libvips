@@ -12,6 +12,17 @@ project('vips', 'c', 'cpp',
         'b_ndebug=if-release'
     ]
 )
+# intl patch
+# Force gettext stub if not auto-detected
+libintl_dep = cc.find_library('intl', required: false)
+
+if not libintl_dep.found()
+  libintl_dep = declare_dependency(
+    include_directories: include_directories('/opt/gettext/include'),
+    link_args: ['-L/opt/gettext/lib', '-lintl']
+  )
+endif
+# end intl patch
 
 version_parts = meson.project_version().split('.')
 version_major = version_parts[0]
@@ -699,14 +710,15 @@ if cc.has_function('ngettext')
     cfg_var.set('ENABLE_NLS', 1)
     have_bind_textdomain_codeset = cc.has_function('bind_textdomain_codeset')
 else
-    libintl_dep = cc.find_library('intl', required: false)
-    if libintl_dep.found()
-        other_deps += libintl_dep
-        cfg_var.set('ENABLE_NLS', 1)
-        have_bind_textdomain_codeset = cc.has_function('bind_textdomain_codeset', prefix: '#include <libintl.h>', dependencies: libintl_dep)
-    else
-        have_bind_textdomain_codeset = false
-    endif
+    # Reuse our forced libintl_dep override from above
+    # libintl_dep = cc.find_library('intl', required: false)
+    # if libintl_dep.found()
+    other_deps += libintl_dep
+    cfg_var.set('ENABLE_NLS', 1)
+    have_bind_textdomain_codeset = cc.has_function('bind_textdomain_codeset', prefix: '#include <libintl.h>', dependencies: libintl_dep)
+    # else
+    #    have_bind_textdomain_codeset = false
+    # endif
 endif
 cfg_var.set('HAVE_BIND_TEXTDOMAIN_CODESET', have_bind_textdomain_codeset)
 
